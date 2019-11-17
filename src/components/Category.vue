@@ -1,6 +1,8 @@
 <template>
+
     <v-card class="category"
         > 
+
     <v-card-title >Code</v-card-title>
     <v-card-subtitle>3 sub-categories</v-card-subtitle>
     <div class="progress-container">

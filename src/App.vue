@@ -11,19 +11,26 @@
     <v-content class="d-flex justify-center align-center">
 
       <!-- <SubCategory></SubCategory> -->
-
-      <!-- <div class="d-flex justify-space-around">
-        <Category></Category>
-      </div> -->
-        <div class="d-flex justify-center align-center">
+        <CategoryForm></CategoryForm>
+      
+        <div v-if="count > 0" class="d-flex justify-space-around">
+          <Category></Category>
+        </div>
+        <div v-else class="d-flex justify-center align-center">
           <p>To Start, add a category<br>
             <small>Ex: Health, Beauty, Books...</small>
           </p>
         </div>
         <div class="add-btn-container">
-          <v-btn fab color="primary">
-            <v-icon dark>mdi-plus</v-icon>
-          </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn fab color="primary" v-on="on">
+              <v-icon dark>mdi-folder-heart</v-icon>
+            </v-btn>
+          </template>
+          <span>Add New Category</span>
+        </v-tooltip>
+          
         </div>
     </v-content>
 
@@ -39,16 +46,21 @@
 
 <script>
 import SubCategory from './components/SubCategory';
-import Category from './components/Category'
+import Category from './components/Category';
+import CategoryForm from './components/CategoryForm';
 
 export default {
   name: 'App',
-
   components: {
     SubCategory,
     Category,
+    CategoryForm,
   },
-
+  computed: {
+      count(){
+          return this.$store.state.categories.length
+      }
+  },
   data: () => ({
     //
   }),
