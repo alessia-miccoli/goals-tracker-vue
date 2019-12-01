@@ -16,13 +16,11 @@
       </v-card-actions>
   </v-card>
 </template>
-
 <script>
 
 export default {
   name: 'Category',
   props: ['category'],
-
   data: () => ({
     //
   }),

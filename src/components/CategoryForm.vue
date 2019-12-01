@@ -12,21 +12,16 @@
             <p>Goals for '{{categoryName}}':</p>
           </div>
           <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex justify-start">
-            <v-checkbox v-model="done"></v-checkbox>
-            <v-text-field v-if="editModeOn"
+            <v-checkbox v-model="goal.done"></v-checkbox>
+            <v-text-field v-if="goal.editModeOn"
               v-model="newDescription"
               :placeholder="goal.description"
             ></v-text-field>
             <p v-else>{{goal.description}}</p>
-            <v-text-field v-if="editModeOn"
-              v-model="newWeight"
-              :placeholder="goal.weight"
-            ></v-text-field>
-            <p v-else>{{goal.weight}}%</p>
             <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn fab small color="primary" v-on="on">
-                <v-icon v-if="!editModeOn" small dark @click="toggleEditMode">mdi-pencil</v-icon>
+                <v-icon v-if="!goal.editModeOn" small dark @click="toggleEditMode(goal)">mdi-pencil</v-icon>
                 <v-icon v-else small dark @click="updateGoal(goal)">mdi-check-bold</v-icon>
               </v-btn>
             </template>
@@ -49,10 +44,6 @@
             <v-text-field
               v-model="description"
               placeholder="Goal Description"
-            ></v-text-field>
-            <v-text-field
-              v-model="weight"
-              placeholder="Weight (%)"
             ></v-text-field>
             <v-tooltip top>
             <template v-slot:activator="{ on }">
@@ -98,7 +89,8 @@ export default {
       const goal = {
         description: this.description,
         done: false,
-        weight: this.weight ? this.weight : 100 - 100/(this.goals.length)
+        weight: this.weight ? this.weight : 100 - 100/(this.goals.length),
+        editModeOn: false
       }
       this.goals.push(goal);
       this.description = '';
@@ -108,19 +100,15 @@ export default {
     removeGoal(goal){
       this.goals.splice(this.goals.findIndex(el => el == goal), 1);
     },
-    toggleEditMode(){
-      this.editModeOn = !this.editModeOn;
+    toggleEditMode(goal){
+      goal.editModeOn = !goal.editModeOn;
     },
     updateGoal(goal){
-      const updatedGoal = {
-        description: this.newDescription ? this.newDescription : goal.description,
-        weight: this.newWeight ? this.newWeight : goal.weight,
-        done: this.done
+      if(this.newDescription!== ''){
+        goal.description = this.newDescription;
+        this.newDescription = '';
       }
-      this.goals.splice(this.goals.findIndex(el => el == goal), 1, updatedGoal);
-      this.newDescription = '';
-      this.newWeight = null;
-      this.toggleEditMode();
+      this.toggleEditMode(goal);
     },
   },
   data: () => ({
@@ -129,7 +117,6 @@ export default {
     description: '',
     done: false,
     weight: null,
-    editModeOn: false,
     newDescription: '',
     newWeight: null,
   }),
