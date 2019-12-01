@@ -8,18 +8,16 @@ Vue.config.productionTip = false
 
 const store = new Vuex.Store({
   state: {
-    categories : []
+    categories : [ ]
   },
   mutations: {
-    addCategory (state) {
-      var newCategory = {
-        categoryName : '',
-        subCategories : [],
-        goals: [],
-        progress : 0
-      }
-
-      state.categories.push(newCategory)
+    addCategory (state, category) {
+      state.categories.push(category)
+    },
+  },
+  getters: {
+    filterByCategoryName: (state) => (categoryName) => {
+      return state.categories.filter(category => category.categoryName === categoryName)
     }
   }
 })

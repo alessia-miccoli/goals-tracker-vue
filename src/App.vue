@@ -1,37 +1,38 @@
 <template>
   <v-app>
-      <div>
-        <v-app-bar color="primary" >
-          <v-toolbar-title >Goals Tracker</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-switch inset></v-switch>
-        </v-app-bar>
-      </div>
-      
+    <div>
+      <v-app-bar color="primary" >
+        <v-toolbar-title >Goals Tracker</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-switch inset></v-switch>
+      </v-app-bar>
+    </div>
     <v-content class="d-flex justify-center align-center">
-
-      <!-- <SubCategory></SubCategory> -->
-        <CategoryForm></CategoryForm>
-      
-        <div v-if="count > 0" class="d-flex justify-space-around">
-          <Category></Category>
+      <div v-if="isCategoryFormVisible">
+        <CategoryForm @close-form="toggleForm" :isCategoryFormVisible="isCategoryFormVisible"></CategoryForm>
+      </div>
+      <div v-else>
+        <div v-if="categories.length > 0" class="d-flex justify-space-around align-center">
+          <div v-for="category in categories" v-bind:key="category.categoryName">
+            <Category :category="category"/>
+          </div>
         </div>
         <div v-else class="d-flex justify-center align-center">
           <p>To Start, add a category<br>
             <small>Ex: Health, Beauty, Books...</small>
           </p>
         </div>
-        <div class="add-btn-container">
+      </div>
+      <div class="add-btn-container" v-if="!isCategoryFormVisible">
         <v-tooltip top>
           <template v-slot:activator="{ on }">
-            <v-btn fab color="primary" v-on="on">
-              <v-icon dark>mdi-folder-heart</v-icon>
+            <v-btn @click="toggleForm" fab color="primary">
+              <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </template>
           <span>Add New Category</span>
         </v-tooltip>
-          
-        </div>
+      </div>
     </v-content>
 
     <v-footer class="d-flex flex-column justify-center">
@@ -41,29 +42,33 @@
   </v-app>
 </template>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-
 <script>
-import SubCategory from './components/SubCategory';
 import Category from './components/Category';
 import CategoryForm from './components/CategoryForm';
+
+import { mapState } from 'vuex';
 
 export default {
   name: 'App',
   components: {
-    SubCategory,
     Category,
     CategoryForm,
   },
-  computed: {
-      count(){
-          return this.$store.state.categories.length
-      }
-  },
   data: () => ({
-    //
+    isCategoryFormVisible : false,
   }),
+  computed: mapState([
+    'categories'
+  ]),
+  methods: {
+    addCategory(){
+      this.toggleForm()
+      this.$store.commit('addCategory')
+    },
+    toggleForm(){
+      this.isCategoryFormVisible = !this.isCategoryFormVisible
+    }
+  }
 };
 </script>
 
@@ -85,15 +90,6 @@ export default {
 
   .progress-container{
     padding: 10px;
-  }
-
-  .subcategory-title{
-    font-size: 2.5vmin!important;
-  }
-
-  .subcategory-title a{
-    color: white !important;
-    text-decoration: none;
   }
 
   .item-container{

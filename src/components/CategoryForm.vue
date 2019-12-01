@@ -1,32 +1,111 @@
 <template>
-  <v-card class="category"> 
-    <v-form class="form">
+  <v-card v-if="isCategoryFormVisible" class="form">
+    <v-btn @click="closeForm" class="float-right" x-small text fab color="primary"><v-icon >mdi-close</v-icon></v-btn>
+    <v-form >
       <v-text-field
+        v-model="categoryName"
         placeholder="Category Name"
-        @input="$v.name.$touch()"
-        @blur="$v.name.$touch()"
       ></v-text-field>
-      <div class="d-flex flex-column buttons-container">
-        <v-btn color="primary">Add sub-category</v-btn>  
-        <v-btn color="primary">Add goal</v-btn>
+      <div class="d-flex flex-column align-center buttons-container">
+        <div class="d-flex flex-column">
+          <div v-if="goals.length > 0">
+            <p>Goals for '{{categoryName}}':</p>
+          </div>
+          <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex align-center justify-center">
+            <v-checkbox v-model="done"></v-checkbox>
+            <p>{{goal.description}}</p>
+            <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn fab small color="primary" v-on="on">
+                <v-icon small dark>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <span>Edit goal</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn fab small color="primary" v-on="on">
+                <v-icon small dark>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+            <span>Remove goal</span>
+          </v-tooltip>
+          </div>
+          <div class="d-flex align-center justify-center">
+            <p>New Goal:</p>
+            <v-text-field
+              v-model="description"
+              placeholder="Goal Description"
+            ></v-text-field>
+            <v-text-field
+              v-model="weight"
+              placeholder="Weight (%)"
+            ></v-text-field>
+            <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn fab small color="primary" v-on="on" @click="newGoal">
+                <v-icon x-small dark>mdi-plus</v-icon>
+              </v-btn>
+            </template>
+            <span>Add to goal list</span>
+          </v-tooltip>
+          </div>
+        </div>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn fab color="primary" v-on="on" @click="addCategory">
+              <v-icon dark>mdi-content-save</v-icon>
+            </v-btn>
+          </template>
+          <span>Save</span>
+        </v-tooltip>
       </div>
+      
     </v-form>
   </v-card>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
 
 export default {
   name: 'CategoryForm',
-
-  components: {
-    // HelloWorld,
+  props: ['isCategoryFormVisible'],
+  methods: {
+    closeForm(){
+      this.$emit('close-form')
+    },
+    addCategory(){
+      const category = {
+        categoryName: this.categoryName,
+        goals: this.goals,
+        progress: this.progress
+      }
+      this.$store.commit('addCategory', category);
+    },
+    newGoal(){
+      const goal = {
+        description: this.description,
+        done: false,
+        weight: this.weight ? this.weight : 100/(this.goals.length)
+      }
+      this.goals.push(goal);
+      this.description = '';
+      this.weight = null;
+      this.done = false;
+    }
   },
-
   data: () => ({
-    //
+    categoryName: '',
+    goals: [],
+    description: '',
+    done: false,
+    weight: null,
   }),
+  computed: {
+    progress(){
+      return 100;
+    }
+  }
 };
 </script>
 
@@ -38,6 +117,7 @@ export default {
 
     .form{
         padding: 10px;
+        width: 50%;
+        margin-left: 25%;
     }
-
 </style>
