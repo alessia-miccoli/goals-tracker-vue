@@ -11,18 +11,23 @@
           <div v-if="goals.length > 0">
             <p>Goals for '{{categoryName}}':</p>
           </div>
-          {{editModeOn}}
           <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex justify-start">
             <v-checkbox v-model="done"></v-checkbox>
             <v-text-field v-if="editModeOn"
-              v-model="goal.description"
+              v-model="newDescription"
+              :placeholder="goal.description"
             ></v-text-field>
             <p v-else>{{goal.description}}</p>
+            <v-text-field v-if="editModeOn"
+              v-model="newWeight"
+              :placeholder="goal.weight"
+            ></v-text-field>
+            <p v-else>{{goal.weight}}%</p>
             <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn fab small color="primary" v-on="on">
                 <v-icon v-if="!editModeOn" small dark @click="toggleEditMode">mdi-pencil</v-icon>
-                <v-icon v-else small dark @click="toggleEditMode">mdi-check-bold</v-icon>
+                <v-icon v-else small dark @click="updateGoal(goal)">mdi-check-bold</v-icon>
               </v-btn>
             </template>
             <span>Edit goal</span>
@@ -68,13 +73,11 @@
           <span>Save</span>
         </v-tooltip>
       </div>
-      
     </v-form>
   </v-card>
 </template>
 
 <script>
-
 export default {
   name: 'CategoryForm',
   props: ['isCategoryFormVisible'],
@@ -107,7 +110,18 @@ export default {
     },
     toggleEditMode(){
       this.editModeOn = !this.editModeOn;
-    }
+    },
+    updateGoal(goal){
+      const updatedGoal = {
+        description: this.newDescription ? this.newDescription : goal.description,
+        weight: this.newWeight ? this.newWeight : goal.weight,
+        done: this.done
+      }
+      this.goals.splice(this.goals.findIndex(el => el == goal), 1, updatedGoal);
+      this.newDescription = '';
+      this.newWeight = null;
+      this.toggleEditMode();
+    },
   },
   data: () => ({
     categoryName: '',
@@ -117,6 +131,7 @@ export default {
     weight: null,
     editModeOn: false,
     newDescription: '',
+    newWeight: null,
   }),
   computed: {
     progress(){
