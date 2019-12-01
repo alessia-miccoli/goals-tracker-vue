@@ -14,7 +14,7 @@
       <div v-else>
         <div v-if="categories.length > 0" class="d-flex justify-space-around align-center">
           <div v-for="category in categories" v-bind:key="category.categoryName">
-            <Category :category="category"/>
+            <Category :category="category" @remove-category="deleteCategory(category)"/>
           </div>
         </div>
         <div v-else class="d-flex justify-center align-center">
@@ -62,11 +62,14 @@ export default {
   ]),
   methods: {
     addCategory(){
-      this.toggleForm()
-      this.$store.commit('addCategory')
+      this.toggleForm();
+      this.$store.commit('addCategory');
     },
     toggleForm(){
       this.isCategoryFormVisible = !this.isCategoryFormVisible
+    },
+    deleteCategory(category){
+      this.categories.splice(this.categories.findIndex(el => el == category), 1);
     }
   }
 };
@@ -76,7 +79,6 @@ export default {
 
   .category{
     width: 30vmin;
-    height: 30vmin;
     flex-wrap: wrap;
   }
 

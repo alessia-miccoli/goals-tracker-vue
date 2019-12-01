@@ -1,6 +1,6 @@
 <template>
     <v-card class="category"> 
-      <v-card-title >{{category.categoryName}}</v-card-title>
+      <v-card-title>{{category.categoryName}}</v-card-title>
       <v-card-subtitle>{{category.goals.length}} goals</v-card-subtitle>
       <div class="progress-container">
         <v-progress-linear
@@ -11,6 +11,9 @@
             {{category.progress}}%
         </v-progress-linear>
       </div>
+      <v-card-actions>
+        <v-btn text @click="removeCategory">Delete</v-btn>
+      </v-card-actions>
   </v-card>
 </template>
 
@@ -23,9 +26,16 @@ export default {
   data: () => ({
     //
   }),
+  methods: {
+    removeCategory(category){
+      this.$emit('remove-category', category);
+    }
+  }
 };
 </script>
 
-<style>
-
+<style scoped>
+  .progress-container{
+    margin-bottom: 15%;
+  }
 </style>

@@ -11,13 +11,18 @@
           <div v-if="goals.length > 0">
             <p>Goals for '{{categoryName}}':</p>
           </div>
+          {{editModeOn}}
           <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex justify-start">
             <v-checkbox v-model="done"></v-checkbox>
-            <p>{{goal.description}}</p>
+            <v-text-field v-if="editModeOn"
+              v-model="goal.description"
+            ></v-text-field>
+            <p v-else>{{goal.description}}</p>
             <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn fab small color="primary" v-on="on">
-                <v-icon small dark>mdi-pencil</v-icon>
+                <v-icon v-if="!editModeOn" small dark @click="toggleEditMode">mdi-pencil</v-icon>
+                <v-icon v-else small dark @click="toggleEditMode">mdi-check-bold</v-icon>
               </v-btn>
             </template>
             <span>Edit goal</span>
@@ -31,7 +36,7 @@
             <span>Remove goal</span>
           </v-tooltip>
           </div>
-          <div v-if="goals.length>0">
+          <div v-if="goals.length > 0">
             <v-divider></v-divider>
           </div>
           <div class="d-flex align-center justify-center">
@@ -84,12 +89,13 @@ export default {
         progress: this.progress
       }
       this.$store.commit('addCategory', category);
+      this.closeForm();
     },
     newGoal(){
       const goal = {
         description: this.description,
         done: false,
-        weight: this.weight ? this.weight : 100/(this.goals.length)
+        weight: this.weight ? this.weight : 100 - 100/(this.goals.length)
       }
       this.goals.push(goal);
       this.description = '';
@@ -98,6 +104,9 @@ export default {
     },
     removeGoal(goal){
       this.goals.splice(this.goals.findIndex(el => el == goal), 1);
+    },
+    toggleEditMode(){
+      this.editModeOn = !this.editModeOn;
     }
   },
   data: () => ({
@@ -106,6 +115,8 @@ export default {
     description: '',
     done: false,
     weight: null,
+    editModeOn: false,
+    newDescription: '',
   }),
   computed: {
     progress(){
