@@ -1,7 +1,7 @@
 <template>
   <v-card v-if="isCategoryFormVisible" class="form">
     <v-btn @click="closeForm" class="float-right" x-small text fab color="primary"><v-icon >mdi-close</v-icon></v-btn>
-    <v-form >
+    <v-form>
       <v-text-field
         v-model="categoryName"
         placeholder="Category Name"
@@ -11,7 +11,7 @@
           <div v-if="goals.length > 0">
             <p>Goals for '{{categoryName}}':</p>
           </div>
-          <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex align-center justify-center">
+          <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex justify-start">
             <v-checkbox v-model="done"></v-checkbox>
             <p>{{goal.description}}</p>
             <v-tooltip top>
@@ -24,12 +24,15 @@
           </v-tooltip>
           <v-tooltip top>
             <template v-slot:activator="{ on }">
-              <v-btn fab small color="primary" v-on="on">
+              <v-btn fab small color="primary" v-on="on" @click="removeGoal(goal)">
                 <v-icon small dark>mdi-delete</v-icon>
               </v-btn>
             </template>
             <span>Remove goal</span>
           </v-tooltip>
+          </div>
+          <div v-if="goals.length>0">
+            <v-divider></v-divider>
           </div>
           <div class="d-flex align-center justify-center">
             <p>New Goal:</p>
@@ -92,6 +95,9 @@ export default {
       this.description = '';
       this.weight = null;
       this.done = false;
+    },
+    removeGoal(goal){
+      this.goals.splice(this.goals.findIndex(el => el == goal), 1);
     }
   },
   data: () => ({
