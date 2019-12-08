@@ -1,7 +1,7 @@
 <template>
     <v-card class="category"> 
-      <v-card-title>{{category.categoryName}}</v-card-title>
-      <v-card-subtitle>{{category.goals.length}} goals</v-card-subtitle>
+      <v-card-title>{{category.name}}</v-card-title>
+      <v-card-subtitle>{{category.goals ? category.goals.length : 0}} goals</v-card-subtitle>
       <div class="progress-container">
         <v-progress-linear
             :striped="true"
@@ -17,7 +17,6 @@
   </v-card>
 </template>
 <script>
-
 export default {
   name: 'Category',
   props: ['category'],
@@ -27,7 +26,7 @@ export default {
   methods: {
     removeCategory(category){
       this.$emit('remove-category', category);
-    }
+    },
   }
 };
 </script>

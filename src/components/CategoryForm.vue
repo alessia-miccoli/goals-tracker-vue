@@ -3,13 +3,13 @@
     <v-btn @click="closeForm" class="float-right" x-small text fab color="primary"><v-icon >mdi-close</v-icon></v-btn>
     <v-form>
       <v-text-field
-        v-model="categoryName"
+        v-model="name"
         placeholder="Category Name"
       ></v-text-field>
       <div class="d-flex flex-column align-center buttons-container">
         <div class="d-flex flex-column">
           <div v-if="goals.length > 0">
-            <p>Goals for '{{categoryName}}':</p>
+            <p>Goals for '{{name}}':</p>
           </div>
           <div v-show="goals.length > 0" v-for="goal in goals" :key="goal.description" class="d-flex justify-start">
             <v-checkbox v-model="goal.done"></v-checkbox>
@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'CategoryForm',
   props: ['isCategoryFormVisible'],
@@ -76,13 +78,15 @@ export default {
     closeForm(){
       this.$emit('close-form')
     },
+    ...mapActions([
+      'addCategoryAsync']),
     addCategory(){
       const category = {
-        categoryName: this.categoryName,
+        name: this.name,
         goals: this.goals,
         progress: this.progress
       }
-      this.$store.commit('addCategory', category);
+      this.$store.dispatch('addCategoryAsync', category);
       this.closeForm();
     },
     newGoal(){
@@ -112,7 +116,7 @@ export default {
     },
   },
   data: () => ({
-    categoryName: '',
+    name: '',
     goals: [],
     description: '',
     done: false,

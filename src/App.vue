@@ -13,7 +13,7 @@
       </div>
       <div v-else>
         <div v-if="categories.length > 0" class="d-flex justify-space-around align-center">
-          <div v-for="category in categories" v-bind:key="category.categoryName">
+          <div v-for="category in categories" v-bind:key="category.id">
             <Category :category="category" @remove-category="deleteCategory(category)"/>
           </div>
         </div>
@@ -46,7 +46,7 @@
 import Category from './components/Category';
 import CategoryForm from './components/CategoryForm';
 
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'App',
@@ -70,7 +70,12 @@ export default {
     },
     deleteCategory(category){
       this.categories.splice(this.categories.findIndex(el => el == category), 1);
-    }
+    },
+    ...mapActions([
+      'getCategories'])
+  },
+  beforeMount(){
+    this.$store.dispatch('getCategories')
   }
 };
 </script>
