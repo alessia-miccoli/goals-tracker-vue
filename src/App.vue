@@ -12,7 +12,7 @@
         <CategoryForm @close-form="toggleForm" :isCategoryFormVisible="isCategoryFormVisible"></CategoryForm>
       </div>
       <div v-else>
-        <div v-if="categories.length > 0" class="d-flex justify-space-around align-center">
+        <div v-if="categories.length > 0" id="categories-container" class="d-flex justify-space-around align-center">
           <div v-for="category in categories" v-bind:key="category.id">
             <Category :category="category" @remove-category="deleteCategory(category)"/>
           </div>
@@ -34,9 +34,8 @@
         </v-tooltip>
       </div>
     </v-content>
-    {{categories}}
     <v-footer class="d-flex flex-column justify-center">
-      <small> Created by Alessia Miccoli with <v-icon small>mdi-heart</v-icon><v-icon small>mdi-vuejs</v-icon><v-icon small>mdi-vuetify</v-icon></small>
+      <small> Alessia Miccoli &amp; Vittorio Vaselli ©</small>
     </v-footer>
 
   </v-app>
@@ -69,9 +68,7 @@ export default {
       this.isCategoryFormVisible = !this.isCategoryFormVisible
     },
     deleteCategory(category){
-      const id = category.id;
-      this.$store.dispatch('deleteCategoryAsync', id);
-      // this.categories.splice(this.categories.findIndex(el => el == category), 1);
+      this.$store.dispatch('deleteCategoryAsync', category);
     },
     ...mapActions([
       'getCategories'])
@@ -87,6 +84,7 @@ export default {
   .category{
     width: 30vmin;
     flex-wrap: wrap;
+    margin-bottom: 2vh;
   }
 
   .add-btn-container{
@@ -97,11 +95,21 @@ export default {
     justify-content: center;
   }
 
+  #categories-container{
+    max-width: 100vw;
+    flex-wrap: wrap;
+  }
+
   .progress-container{
     padding: 10px;
   }
 
   .item-container{
      width: 100vw; 
+  }
+
+  .wrapper{
+    flex-wrap: wrap;
+    width: 100%;
   }
 </style>
