@@ -5,6 +5,7 @@
       <v-text-field
         v-model="name"
         placeholder="Category Name"
+        :rules="[rules.fieldMandatory]"
       ></v-text-field>
       <div class="d-flex flex-column align-center buttons-container">
         <div class="d-flex flex-column">
@@ -43,6 +44,7 @@
             <p>New Goal:</p>
             <v-text-field
               v-model="description"
+              :rules="[rules.fieldMandatory]"
               placeholder="Goal Description"
             ></v-text-field>
             <v-tooltip top>
@@ -123,6 +125,9 @@ export default {
     weight: null,
     newDescription: '',
     newWeight: null,
+    rules : {
+      fieldMandatory : (name) => (name !== '' || 'This field is mandatory')
+    }
   }),
   computed: {
     progress(){
