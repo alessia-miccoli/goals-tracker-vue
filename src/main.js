@@ -9,12 +9,15 @@ Vue.config.productionTip = false
 
 const store = new Vuex.Store({
   state: {
-    categories : [ ]
+    categories : []
   },
   mutations: {
     addCategory (state, category) {
-      state.categories.push(category)
+      state.categories.push(category);
     },
+    deleteCategory(state, id){
+      state.categories.splice(state.categories.findIndex(category => category.id == id), 1);
+    }
   },
   actions:  {
     getCategories ({ state }){
@@ -27,9 +30,9 @@ const store = new Vuex.Store({
         commit('addCategory', category)
       } )
     },
-    deleteCategoryAsync(id){
-      axios.delete("https://gltrckr.herokuapp.com/api/categories/", id).then((res) => {
-        res.status
+    deleteCategoryAsync({ commit }, id){
+      axios.delete(`https://gltrckr.herokuapp.com/api/categories/${id}`).then(() => {
+        commit('deleteCategory', id);
       })
     }
   },

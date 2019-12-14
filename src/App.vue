@@ -34,7 +34,7 @@
         </v-tooltip>
       </div>
     </v-content>
-
+    {{categories}}
     <v-footer class="d-flex flex-column justify-center">
       <small> Created by Alessia Miccoli with <v-icon small>mdi-heart</v-icon><v-icon small>mdi-vuejs</v-icon><v-icon small>mdi-vuetify</v-icon></small>
     </v-footer>
@@ -69,12 +69,14 @@ export default {
       this.isCategoryFormVisible = !this.isCategoryFormVisible
     },
     deleteCategory(category){
-      this.categories.splice(this.categories.findIndex(el => el == category), 1);
+      const id = category.id;
+      this.$store.dispatch('deleteCategoryAsync', id);
+      // this.categories.splice(this.categories.findIndex(el => el == category), 1);
     },
     ...mapActions([
       'getCategories'])
   },
-  beforeMount(){
+  created(){
     this.$store.dispatch('getCategories')
   }
 };
